@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json())
+
 let phonebook = [
   {
     id: 1,
@@ -36,18 +38,50 @@ app.get("/info", (request, response) => {
   response.send(`
   <p>Phonebook has info for ${phonebook.length} people</p>
   
-  <p>${new Date}</p>`)
-})
+  <p>${new Date()}</p>`);
+});
 
 app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
-  const person = phonebook.find((p) => p.id === id)
+  const person = phonebook.find((p) => p.id === id);
 
   if (person) {
-    response.json(person)
+    response.json(person);
   } else {
-    response.status(404).end()
+    response.status(404).end();
   }
+});
+
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  phonebook = phonebook.filter((p) => p.id !== id);
+
+  response.status(204).end();
+});
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body
+  const randomId = Math.floor(Math.random() * 9999999)
+
+  if (phonebook.find(p => p.name === body.name)) {
+    response.status(400).json({
+      error: 'name must be unique'
+    }) 
+  } else if (!body.number || !body.name) {
+    response.status(400).json({
+      error: 'name or number is missing '
+    })
+  }
+
+  const person = {
+    id: randomId,
+    name: body.name,
+    number: body.number
+  }
+
+  phonebook = phonebook.concat(person)
+
+  response.json(person)
 })
 
 const PORT = 3001;

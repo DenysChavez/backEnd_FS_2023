@@ -45,11 +45,12 @@ app.get("/api/notes/:id", (request, response) => {
   }
 });
 
-app.delete("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const note = notes.find((note) => note.id === id);
-  response.status(204).end();
-});
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  notes = notes.filter(note => note.id !== id)
+
+  response.status(204).end()
+})
 
 app.post("/api/notes", (request, response) => {
   const body = request.body;
@@ -66,7 +67,7 @@ app.post("/api/notes", (request, response) => {
     id: generateId()
   }
 
-  notes = note.concat(note)
+  notes = notes.concat(note)
   response.json(note)
 });
 
