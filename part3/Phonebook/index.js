@@ -73,11 +73,11 @@ app.post("/api/persons", (request, response) => {
   const randomId = Math.floor(Math.random() * 9999999)
 
   if (phonebook.find(p => p.name.toLowerCase() === body.name.toLowerCase())) {
-    response.status(404).json({
+    response.status(404).send({
       error: 'name must be unique'
     }) 
   } else if (!body.number || !body.name) {
-    response.status(400).json({
+    response.status(400).send({
       error: 'name or number is missing'
     })
   }
