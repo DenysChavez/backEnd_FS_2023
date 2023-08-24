@@ -14,10 +14,10 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
-app.use(express.static('build'))
 
 let notes = [
   {
@@ -37,10 +37,9 @@ let notes = [
   }
 ]
 
-
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
-})
+// app.get('/', (req, res) => {
+//   res.send('<h1>Hello World!</h1>')
+// })
 
 app.get('/api/notes', (req, res) => {
   res.json(notes)
@@ -72,6 +71,11 @@ app.post('/api/notes', (request, response) => {
   notes = notes.concat(note)
 
   response.json(note)
+})
+
+app.put('/api/notes/:id', (request, response) => {
+  const body = request.body
+  response.json(body)
 })
 
 app.get('/api/notes/:id', (request, response) => {
