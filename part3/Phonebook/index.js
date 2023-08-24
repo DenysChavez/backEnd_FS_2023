@@ -73,11 +73,11 @@ app.post("/api/persons", (request, response) => {
   const randomId = Math.floor(Math.random() * 9999999)
 
   if (phonebook.find(p => p.name.toLowerCase() === body.name.toLowerCase())) {
-    response.status(404).send({
+    response.status(404).json({
       error: 'name must be unique'
     }) 
   } else if (!body.number || !body.name) {
-    response.status(400).send({
+    response.status(400).json({
       error: 'name or number is missing'
     })
   }
@@ -91,6 +91,34 @@ app.post("/api/persons", (request, response) => {
   phonebook = phonebook.concat(person)
 
   response.json(person)
+})
+
+app.put("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const body = request.body
+  const personIndex = phonebook.find((p) => p.id === id)
+  
+  if (personIndex === -1) {
+    return response.status(404).json({
+      error: 'Person not found'
+    });
+  }
+
+  if (!body.number || !body.name) {
+    return response.status(400).json({
+      error: 'name or number is missing'
+    });
+  }
+
+  const updatedPerson = {
+    id: id,
+    name: body.name,
+    number: body.number
+  };
+
+  phonebook[personIndex] = updatedPerson;
+
+  response.json(updatedPerson);
 })
 
 const PORT = process.env.PORT || 3001
