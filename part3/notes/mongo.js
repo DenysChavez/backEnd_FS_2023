@@ -8,7 +8,7 @@ if (process.argv.length<3) {
 
 const password = process.argv[2]
 
-const url = process.env.DB_URL.replace('%s', password)
+const url = process.env.MONGODB_URI.replace('%s', password)
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
