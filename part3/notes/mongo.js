@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+require('dotenv').config()
 
 if (process.argv.length<3) {
   console.log('give password as argument')
@@ -7,44 +8,34 @@ if (process.argv.length<3) {
 
 const password = process.argv[2]
 
-const url =
+const url = process.env.DB_URL.replace('%s', password)
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
-// set of rules or a blueprint
+// The schema tells Mongoose how the note objects are to be stored in the database.
 const noteSchema = new mongoose.Schema({
   content: String,
   important: Boolean,
 })
 
-// Model so-called 'constructor functions'
+//the first "Note" parameter is the singular name of the model
+// Models are so-called constructor functions that create new JavaScript objects based on the provided parameters. 
 const Note = mongoose.model('Note', noteSchema)
 
-// // the application creates a new note object with the help of the Note model
+Note.find({}).then(result => {
+  result.forEach(note => {
+    console.log(note);
+  })
+  mongoose.connection.close()
+})
+
 // const note = new Note({
-//   content: "Micho is a cutie cat",
+//   content: 'HTML is Easy',
 //   important: true,
 // })
 
 // note.save().then(result => {
-//     console.log(result);
 //   console.log('note saved!')
 //   mongoose.connection.close()
-// })
-
-// // retrieved all data from the database
-// Note.find({}).then(result => {
-//     result.forEach(note => {
-//         console.log(note);
-//     })
-//     mongoose.connection.close()
-// })
-
-// //  only include important notes
-// Note.find({ important: true }).then(result => {
-//     result.forEach(note => {
-//         console.log(note);
-//     })
-//     mongoose.connection.close()
 // })
