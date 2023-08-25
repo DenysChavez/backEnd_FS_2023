@@ -25,15 +25,11 @@ app.get("/info", (request, response) => {
   <p>${new Date()}</p>`);
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = phonebook.find((p) => p.id === id);
+app.get("/api/people/:id", (request, response) => {
+  Person.findById(request.params.id).then(person => {
+    response.json(person)
+  })
 
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -43,29 +39,17 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/people", (request, response) => {
   const body = request.body
-  const randomId = Math.floor(Math.random() * 9999999)
 
-  if (phonebook.find(p => p.name.toLowerCase() === body.name.toLowerCase())) {
-    response.status(404).json({
-      error: 'name must be unique'
-    }) 
-  } else if (!body.number || !body.name) {
-    response.status(400).json({
-      error: 'name or number is missing'
-    })
-  }
-
-  const person = {
-    id: randomId,
+  const newPerson = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  phonebook = phonebook.concat(person)
-
-  response.json(person)
+  newPerson.save().then(result => {
+    response.json(result)
+  })
 })
 
 app.put("/api/persons/:id", (request, response) => {
