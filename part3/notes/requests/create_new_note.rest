@@ -8,7 +8,7 @@ POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-    "content": "VS code rest client is a pretty handy tool",
+    "content": "VS",
     "important": true
 }
 
@@ -20,6 +20,6 @@ PUT http://localhost:3001/api/notes/64d52ec79bc9f68ea07748ba
 Content-Type: application/json
 
 {
-    "content": "VS code rest client is a pretty handy tool",
+    "content": "Micho Bonito",
     "important": true
 }

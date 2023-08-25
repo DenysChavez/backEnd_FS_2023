@@ -16,8 +16,12 @@ mongoose.connect(url)
   })
 
 const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
+  content: {
+    type: String,
+    minLength: 5,
+    required: true
+  },
+  important: Boolean
 })
 
 // modify the toJSON method of the schema, which is used on all instances of the models produced with that schema.
