@@ -34,8 +34,7 @@ app.post("/api/notes", (request, response) => {
 
   const note = new Note({
     content: body.content,
-    important: body.important || false,
-    date: new Date(),
+    important: body.important || false
   });
 
   note.save().then((savedNote) => {
@@ -45,7 +44,15 @@ app.post("/api/notes", (request, response) => {
 
 app.put("/api/notes/:id", (request, response) => {
   const body = request.body;
-  response.json(body);
+  
+  const note = {
+    content: body.content,
+    important: body.important
+  }
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true }).then(updatedNote => {
+    response.json(updatedNote)
+  }).catch(error => next(error))
 });
 
 app.get("/api/notes/:id", (request, response, next) => {
