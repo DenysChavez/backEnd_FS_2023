@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan")
 const cors = require("cors");
 const app = express();
-
+const Person = require('./models/person')
 // create a new token for 'body'
 morgan.token("body", function (req, res) { return JSON.stringify(req.body) })
 
@@ -12,40 +12,15 @@ app.use(express.json())
 // use morgan middleware with custom format
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let phonebook = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
-// app.get("/", (request, response) => {
-//   response.send("<h1>Hello this is a Phonebook!</h1>");
-// });
-
-app.get("/api/persons", (request, response) => {
-  response.json(phonebook);
+app.get("/api/people", (request, response) => {
+  Person.find({}).then((p) => {
+    response.json(p);
+  });
 });
 
 app.get("/info", (request, response) => {
   response.send(`
-  <p>Phonebook has info for ${phonebook.length} people</p>
+  <p>Phonebook has info for ${Person.find({}).length} people</p>
   
   <p>${new Date()}</p>`);
 });
