@@ -1,4 +1,4 @@
-DELETE http://localhost:3000/api/persons/:id
+DELETE http://localhost:3001/api/people/64e8b8748a071b93edc7313f3154
 
 ###
 POST http://localhost:3001/api/people
@@ -10,7 +10,7 @@ Content-Type : application/json
 }
 
 ###
-GET http://localhost:3001/api/people
+GET http://localhost:3001/api/people/safsdafl
 
 ###
-GET http://localhost:3001/api/people/64e7e09cf1c76162a03c843f
+GET http://localhost:3001/api/people/
