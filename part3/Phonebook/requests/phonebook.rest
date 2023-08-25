@@ -10,7 +10,16 @@ Content-Type : application/json
 }
 
 ###
-GET http://localhost:3001/api/people/safsdafl
+GET http://localhost:3001/api/people/64e7cd2a9a25b21aaf44582b
 
 ###
 GET http://localhost:3001/api/people/
+
+###
+PUT http://localhost:3001/api/people/64e7cd2a9a25b21aaf44582b
+Content-Type : application/json
+
+{
+    "name": "Dan Quinn",
+    "number": "123456687"
+}

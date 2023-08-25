@@ -30,15 +30,19 @@ app.get("/info", (request, response) => {
 });
 
 app.get("/api/people/:id", (request, response, next) => {
-  Person.findById(request.params.id).then((person) => {
-    response.json(person);
-  }).catch(error => next(error))
+  Person.findById(request.params.id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/people/:id", (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id).then(result => {
-    response.status(204).end()
-  }).catch(error => next(error))
+  Person.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/people", (request, response) => {
@@ -54,32 +58,19 @@ app.post("/api/people", (request, response) => {
   });
 });
 
-app.put("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
+app.put("/api/people/:id", (request, response, next) => {
   const body = request.body;
-  const personIndex = phonebook.find((p) => p.id === id);
 
-  if (personIndex === -1) {
-    return response.status(404).json({
-      error: "Person not found",
-    });
-  }
-
-  if (!body.number || !body.name) {
-    return response.status(400).json({
-      error: "name or number is missing",
-    });
-  }
-
-  const updatedPerson = {
-    id: id,
+  const updatePerson = {
     name: body.name,
     number: body.number,
   };
 
-  phonebook[personIndex] = updatedPerson;
-
-  response.json(updatedPerson);
+  Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true })
+    .then((result) => {
+      response.json(result);
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
