@@ -12,10 +12,6 @@ const requestLogger = (request, response, next) => {
   next();
 };
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
-};
-
 app.use(express.static("build"));
 app.use(cors());
 app.use(express.json());
@@ -52,17 +48,14 @@ app.put("/api/notes/:id", (request, response) => {
   response.json(body);
 });
 
-app.get("/api/notes/:id", (request, response) => {
+app.get("/api/notes/:id", (request, response, next) => {
   Note.findById(request.params.id).then(note => {
     if (note) {
       response.json(note)
     } else {
       response.status(404).end()
     }
-  }).catch(error => {
-    console.log(error)
-    response.status(400).send({error: 'malformatted id'})
-  })
+  }).catch(error => next(error))
 });
 
 app.delete("/api/notes/:id", (request, response) => {
@@ -72,7 +65,21 @@ app.delete("/api/notes/:id", (request, response) => {
   response.status(204).end();
 });
 
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
 app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({error: 'malformatted id'})
+  }
+  next(error)
+}
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
