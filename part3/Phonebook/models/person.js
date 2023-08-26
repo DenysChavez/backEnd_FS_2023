@@ -15,7 +15,11 @@ mongoose.connect(url)
 
   // The schema tells Mongoose how the person objects are to be stored in the database.
 const personSchema = new mongoose.Schema({
-    name: String,
+  name: {
+    type: String,
+    minLength: 5,
+    required: true
+    },
     number: String,
 });
   

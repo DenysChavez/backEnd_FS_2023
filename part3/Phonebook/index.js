@@ -32,7 +32,11 @@ app.get("/info", (request, response) => {
 app.get("/api/people/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((person) => {
-      response.json(person);
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).send({ error: "Person not found" });
+      }
     })
     .catch((error) => next(error));
 });
@@ -45,7 +49,7 @@ app.delete("/api/people/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/people", (request, response) => {
+app.post("/api/people", (request, response, next) => {
   const body = request.body;
 
   const newPerson = new Person({
@@ -55,20 +59,22 @@ app.post("/api/people", (request, response) => {
 
   newPerson.save().then((result) => {
     response.json(result);
-  });
+  }).catch(error => next(error))
 });
 
 app.put("/api/people/:id", (request, response, next) => {
-  const body = request.body;
+  const {name, number} = request.body;
 
-  const updatePerson = {
-    name: body.name,
-    number: body.number,
-  };
-
-  Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true })
-    .then((result) => {
-      response.json(result);
+  Person.findByIdAndUpdate(
+    request.params.id,
+    {name, number},
+    { new: true, runValidators: true, context: 'query' })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        response.json(updatedPerson);
+      } else {
+        response.status(404).send({ error: "Person not found" });
+      }
     })
     .catch((error) => next(error));
 });
@@ -83,6 +89,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
   }
   next(error);
 };
