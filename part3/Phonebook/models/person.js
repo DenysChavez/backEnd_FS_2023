@@ -23,9 +23,14 @@ const personSchema = new mongoose.Schema({
   number: {
     type: String,
     minLength: 8,
-    required: true,
-    match: [/^\d{2,3}-\d+$/, 'The phone number format is invalid.']
+    validate: {
+      validator: function (v) {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number`
     },
+    required: [true, 'User phone number required'],
+    }
 });
   
 // modify the toJSON method of the schema, which is used on all instances of the models produced with that schema.
