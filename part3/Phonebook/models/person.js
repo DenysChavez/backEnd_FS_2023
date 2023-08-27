@@ -20,7 +20,12 @@ const personSchema = new mongoose.Schema({
     minLength: 5,
     required: true
     },
-    number: String,
+  number: {
+    type: String,
+    minLength: 8,
+    required: true,
+    match: [/^\d{2,3}-\d+$/, 'The phone number format is invalid.']
+    },
 });
   
 // modify the toJSON method of the schema, which is used on all instances of the models produced with that schema.
