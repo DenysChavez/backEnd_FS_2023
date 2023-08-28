@@ -1,0 +1,12 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Michito Bonito",
+    "author": "Micho",
+    "url": "https://hips.hearstapps.com/hmg-prod/images/cute-cat-photos-1593441022.jpg?crop=1.00xw:0.753xh;0,0.153xh&resize=1200:*",
+    "like": 59
+}
+
+###
+GET http://localhost:3003/api/blogs
